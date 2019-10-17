@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:layout_width="match_parent"
+        android:id="@+id/imageView"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        android:padding="1dp"
+        android:foregroundGravity="center"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/detailsCardView"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/colorAccent"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+    <TextView
+        android:layout_gravity="center"
+        android:id="@+id/detailText"
+        android:gravity="center"
+        android:text=" Checking"
+        android:visibility="visible"
+        android:textColor="#FFFF"
+        android:textSize="20dp"
+        android:padding="1dp"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
