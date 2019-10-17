@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
 
             Log.i("Check" , imageList1[position].author.toString())
-            if (position%3!=0 ) {
+            if (position%3!=0 && position!=0) {
                 p0.itemView.imageView.visibility = View.VISIBLE
-                Picasso.get().load(image.download_url).resize(100,100).centerCrop()
+                Picasso.get().load(image.download_url).resize(500,500).centerCrop()
                     .into(p0.itemView.imageView)
                 p0.itemView.detailText.text = image.author
                 p0.itemView.detailsCardView.visibility = View.GONE
@@ -44,10 +44,12 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
             {
                 if(image.visisbility==false)
                 {
-                    p0.itemView.visibility =View.GONE
+                    //p0.itemView.visibility =View.GONE
+                    p0.itemView.detailsCardView.visibility = View.GONE
                 }
                 else
                 {
+                    //p0.itemView.visibility=View.VISIBLE
                     p0.itemView.detailsCardView.visibility =View.VISIBLE
                    // p0.itemView.detailText.visibility = View.VISIBLE
 
@@ -65,12 +67,12 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
             if ((position+2)%3==0) {
                 detail = imageList1[position].author
-                index = p0.adapterPosition + 2
+                index = position + 2
             }
             else if((position+1)%3==0)
             {
                 detail = imageList1[position].author
-                index = p0.adapterPosition + 1
+                index = position + 1
             }
             imageList1[index].author = detail
             if (!imageList1[index].visisbility)
@@ -79,6 +81,7 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
                 imageList1[index].visisbility = false
 
             mAdapter.notifyItemChanged(index)
+
 
 
 
@@ -136,7 +139,7 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
                     Log.i("list check" , it.author.toString())
                 }
 
-                mAdapter.showAllImages(imageList1.subList(0,10))
+                mAdapter.showAllImages(imageList1)
 
 
             } else {
@@ -155,8 +158,6 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
                    0->return 2
                     else->return 1
                 }
-
-
 
             }
 
