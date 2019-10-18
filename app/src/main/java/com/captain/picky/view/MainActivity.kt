@@ -25,8 +25,13 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
     private val mAdapter by lazy { ImageRecyclerAdapter(this) }
 
+    var index: Int? = null
+
+
     override fun onBindViewHolder(p0: ImageRecyclerAdapter.ViewHolder, position: Int) {
         val image = imageList1[position]
+
+        Log.i("Visibility" , imageList1[position].visisbility.toString())
 
         Log.i("POsition",p0.adapterPosition.toString().plus("  ").plus(position.toString()))
 
@@ -63,24 +68,29 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
         p0.itemView.imageView.setOnClickListener {
 
             var detail:String? = ""
-            var index = 0
 
             if ((position+2)%3==0) {
                 detail = imageList1[position].author
                 index = position + 2
+
             }
             else if((position+1)%3==0)
             {
                 detail = imageList1[position].author
                 index = position + 1
             }
-            imageList1[index].author = detail
-            if (!imageList1[index].visisbility)
-                imageList1[index].visisbility = true
-            else if(imageList1[index].visisbility)
-                imageList1[index].visisbility = false
+            Log.i("Position clicked" , index.toString())
 
-            mAdapter.notifyItemChanged(index)
+            index?.let{
+                imageList1[it].author = detail
+                if (!imageList1[it].visisbility)
+                    imageList1[it].visisbility = true
+                else if(imageList1[it].visisbility)
+                    imageList1[it].visisbility = false
+
+                mAdapter.notifyItemChanged(it)
+            }
+
 
 
 
@@ -110,7 +120,6 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dummyResponseModel = ImagesResponseModel(0,0,"","bb","","",false)
 
         viewModel.getAllImages().observe(this, Observer {
 
@@ -122,7 +131,7 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
                     if(count%3==0 )
                     {
-                        imageList1.add(dummyResponseModel)
+                        imageList1.add(ImagesResponseModel(index,0,"null","","","",false))
                         imageList1.add(imagesResponseModel)
                         count++
                     }else
@@ -133,7 +142,7 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
 
                 }
-                imageList1.add(dummyResponseModel)
+                imageList1.add(ImagesResponseModel(index,0,"null","","","",false))
 
                 imageList1.forEach {
                     Log.i("list check" , it.author.toString())
