@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.marginLeft
+import androidx.core.view.marginStart
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.captain.picky.R
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
     var index: Int? = null
 
+    var clickPosition:Int?=null
+
 
     override fun onBindViewHolder(p0: ImageRecyclerAdapter.ViewHolder, position: Int) {
         val image = imageList1[position]
@@ -35,8 +39,6 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
 
         Log.i("POsition",p0.adapterPosition.toString().plus("  ").plus(position.toString()))
 
-
-
             Log.i("Check" , imageList1[position].author.toString())
             if (position%3!=0 && position!=0) {
                 p0.itemView.imageView.visibility = View.VISIBLE
@@ -44,6 +46,8 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
                     .into(p0.itemView.imageView)
                 p0.itemView.detailText.text = image.author
                 p0.itemView.detailsCardView.visibility = View.GONE
+                p0.itemView.triangle_marker.visibility = View.GONE
+
             }
             else
             {
@@ -51,21 +55,48 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
                 {
                     //p0.itemView.visibility =View.GONE
                     p0.itemView.detailsCardView.visibility = View.GONE
+                    p0.itemView.triangle_marker.visibility = View.GONE
+
+
                 }
                 else
                 {
                     //p0.itemView.visibility=View.VISIBLE
                     p0.itemView.detailsCardView.visibility =View.VISIBLE
-                   // p0.itemView.detailText.visibility = View.VISIBLE
+                    p0.itemView.triangle_marker.visibility = View.VISIBLE
+
+                    clickPosition?.let {
+                        if ((it+2)%3==0) {
+                            p0.itemView.triangle_marker.translationX = -250F
+
+
+                        } else if((it+1)%3==0)
+                        {
+                            p0.itemView.triangle_marker.translationX = 250F
+
+
+                        }
+                    }
+
+
+
+
+                    // p0.itemView.detailText.visibility = View.VISIBLE
 
                 }
                 p0.itemView.detailText.text = image.author
                 p0.itemView.imageView.visibility = View.GONE
+                //p0.itemView.triangle_marker.visibility = View.GONE
+
 
             }
 
 
         p0.itemView.imageView.setOnClickListener {
+
+            clickPosition=p0.adapterPosition
+
+
 
             var detail:String? = ""
 
@@ -88,7 +119,18 @@ class MainActivity : AppCompatActivity(),Callback.onBindviewHolderCallback {
                 else if(imageList1[it].visisbility)
                     imageList1[it].visisbility = false
 
+
+
+                /*if (p0.itemView.triangle_marker.visibility == View.VISIBLE) {
+
+                    //p0.itemView.triangle_marker.visibility = View.GONE
+                }else
+                {
+                    //p0.itemView.triangle_marker.visibility = View.VISIBLE
+
+                }*/
                 mAdapter.notifyItemChanged(it)
+
             }
 
 
