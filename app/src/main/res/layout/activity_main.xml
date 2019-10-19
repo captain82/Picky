@@ -62,7 +62,7 @@
       </LinearLayout>
    </com.facebook.shimmer.ShimmerFrameLayout>
 
-   <com.captain.picky.view.CustomGridRecyclerView
+   <androidx.recyclerview.widget.RecyclerView
        android:layout_below="@id/select_detail"
        android:layout_width="match_parent"
        android:id="@+id/recyclerView"

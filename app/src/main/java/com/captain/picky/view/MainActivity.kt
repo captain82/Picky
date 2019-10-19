@@ -18,49 +18,138 @@ import kotlinx.android.synthetic.main.single_image_layout.view.author
 
 class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
 
-    private var imageList: List<ImagesResponseModel> = arrayListOf()
-
-    private var imageList1: MutableList<ImagesResponseModel> = mutableListOf()
+    private var mutableImageList: MutableList<ImagesResponseModel> = mutableListOf()
 
     private val mAdapter by lazy { ImageRecyclerAdapter(this) }
+
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(ImagesViewModel::class.java)
+    }
 
     var index: Int? = null
 
     var clickPosition: Int? = null
 
+    var author: String? = ""
+
+    var download_url: String? = ""
+
+    var url: String? = ""
+
+
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(com.captain.picky.R.layout.activity_main)
+
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window.statusBarColor = resources.getColor(com.captain.picky.R.color.white)
+
+        viewModel.getAllImages().observe(this, Observer {
+
+            if (it != null && it.isNotEmpty()) {
+
+                parentShimmerLayout.visibility = View.GONE
+                parentShimmerLayout.stopShimmerAnimation()
+
+                //Adding a dummy ImageResponseModel with visibility false at every 3rd position
+
+                var count = 0
+
+                it.forEachIndexed { index, imagesResponseModel ->
+
+                    if (count % 3 == 0) {
+                        mutableImageList.add(ImagesResponseModel(index, 0, "null", "", "", "", false))
+                        mutableImageList.add(imagesResponseModel)
+                        count++
+                    } else {
+                        mutableImageList.add(imagesResponseModel)
+                    }
+                    count++
+                }
+
+                mutableImageList.add(ImagesResponseModel(index, 0, "null", "", "", "", false))
+
+
+            } else {
+                mutableImageList = arrayListOf()
+                Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show()
+
+            }
+
+            mAdapter.showAllImages(mutableImageList)
+
+        })
+
+
+        val gridManager = GridLayoutManager(this, 2)
+
+        //Setting equal padding for grid layout
+        val itemDecoration = ItemOffsetDecoration(this, com.captain.picky.R.dimen.padding5)
+        recyclerView.addItemDecoration(itemDecoration)
+
+        //Setting the column length of every 3rd element to 2
+        gridManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+
+            override fun getSpanSize(position: Int): Int {
+                when (position % 3) {
+                    0 -> return 2
+                    else -> return 1
+                }
+
+            }
+
+        }
+
+
+        recyclerView.layoutManager = gridManager
+        mAdapter.notifyDataSetChanged()
+        recyclerView.adapter = mAdapter
+        viewModel.getImagesFromNetwork()
+
+
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        parentShimmerLayout.startShimmerAnimation()
+
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        parentShimmerLayout.stopShimmerAnimation()
+    }
 
     override fun onBindViewHolder(p0: ImageRecyclerAdapter.ViewHolder, position: Int) {
 
 
+        val image = mutableImageList[position]
 
-        val image = imageList1[position]
+        //If the position is multiple of 3 we make their visibility GONE otherwise VISIBLE
 
-        Log.i("Visibility", imageList1[position].visisbility.toString())
-
-        Log.i("POsition", p0.adapterPosition.toString().plus("  ").plus(position.toString()))
-
-        Log.i("Check", imageList1[position].author.toString())
         if (position % 3 != 0 && position != 0) {
             p0.itemView.imageView.visibility = View.VISIBLE
-            Picasso.get().load(image.download_url).resize(350, 350).centerCrop()
+            Picasso.get().load(image.download_url).resize(450, 450).centerCrop()
                 .into(p0.itemView.imageView)
             p0.itemView.author.text = image.author
             p0.itemView.download_url.text = "Image Url  :  ${image.download_url}"
             p0.itemView.url.text = "Website  :  ${image.url}"
-
             p0.itemView.detailsCardView.visibility = View.GONE
             p0.itemView.triangle_marker.visibility = View.GONE
 
 
         } else {
-            if (image.visisbility == false) {
-                //p0.itemView.visibility =View.GONE
+            if (!image.visisbility) {
+
                 p0.itemView.detailsCardView.visibility = View.GONE
                 p0.itemView.triangle_marker.visibility = View.GONE
-                p0.itemView.setPadding(0,0,0,0)
-
 
             } else {
+
                 p0.itemView.detailsCardView.visibility = View.VISIBLE
                 p0.itemView.triangle_marker.visibility = View.VISIBLE
 
@@ -76,13 +165,11 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
                     }
                 }
 
-
-                // p0.itemView.detailText.visibility = View.VISIBLE
-
             }
             p0.itemView.author.text = image.author
+            p0.itemView.download_url.text = image.download_url
+            p0.itemView.url.text = image.url
             p0.itemView.imageView.visibility = View.GONE
-            //p0.itemView.triangle_marker.visibility = View.GONE
 
         }
 
@@ -91,173 +178,43 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
 
             clickPosition = p0.adapterPosition
 
-
-            var author: String? = ""
-            var download_url:String? = ""
-            var url:String? = ""
-
+            //Detecting if the left or right element is clicked
 
             if ((position + 2) % 3 == 0) {
-                author = imageList1[position].author
-                download_url = imageList1[position].download_url
-                url = imageList1[position].url
-
+                author = image.author
+                download_url = image.download_url
+                url = image.url
                 index = position + 2
 
             } else if ((position + 1) % 3 == 0) {
-                author = imageList1[position].author
-                download_url = imageList1[position].download_url
-                url = imageList1[position].url
-
+                author = image.author
+                download_url = image.download_url
+                url = image.url
                 index = position + 1
             }
-            Log.i("Position clicked", index.toString())
 
+            //changing the visibility all other tootips except the one clicked to false
             index?.let {
-                imageList1[it].author = author
-                imageList1[it].download_url = download_url
-                imageList1[it].url = url
+                mutableImageList.forEachIndexed { index, imagesResponseModel ->
+                    if (index != it && imagesResponseModel.visisbility) {
+                        imagesResponseModel.visisbility = false
+                        mAdapter.notifyItemChanged(index)
+                    }
+                }
+                mutableImageList[it].author = author
+                mutableImageList[it].download_url = download_url
+                mutableImageList[it].url = url
 
-                if (!imageList1[it].visisbility)
-                    imageList1[it].visisbility = true
-                else if (imageList1[it].visisbility)
-                    imageList1[it].visisbility = false
-
-
-                /*if (p0.itemView.triangle_marker.visibility == View.VISIBLE) {
-
-                    //p0.itemView.triangle_marker.visibility = View.GONE
-                }else
-                {
-                    //p0.itemView.triangle_marker.visibility = View.VISIBLE
-
-                }*/
+                if (!mutableImageList[it].visisbility)
+                    mutableImageList[it].visisbility = true
+                else if (mutableImageList[it].visisbility)
+                    mutableImageList[it].visisbility = false
 
                 mAdapter.notifyItemChanged(it)
 
             }
-
-
-/*
-            if (!image.visisbility)
-            {
-                p0.itemView.detailText.visibility = View.GONE
-            }
-            else
-            {
-                p0.itemView.detailText.visibility = View.VISIBLE
-
-            }*/
-
         }
     }
-
-    private val viewModel by lazy {
-
-        ViewModelProviders.of(this).get(ImagesViewModel::class.java)
-
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(com.captain.picky.R.layout.activity_main)
-
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        window.statusBarColor = resources.getColor(com.captain.picky.R.color.white)
-
-        viewModel.getAllImages().observe(this, Observer {
-
-            if (it != null && !it.isEmpty()) {
-                parentShimmerLayout.visibility = View.GONE
-                parentShimmerLayout.stopShimmerAnimation()
-                imageList = it
-
-                var count = 0
-
-                imageList.forEachIndexed { index, imagesResponseModel ->
-
-                    if (count % 3 == 0) {
-                        imageList1.add(ImagesResponseModel(index, 0, "null", "", "", "", false))
-                        imageList1.add(imagesResponseModel)
-                        count++
-                    } else {
-                        imageList1.add(imagesResponseModel)
-                    }
-                    count++
-
-
-                }
-                imageList1.add(ImagesResponseModel(index, 0, "null", "", "", "", false))
-
-                imageList1.forEach {
-                    Log.i("list check", it.author.toString())
-                }
-
-                mAdapter.showAllImages(imageList1)
-
-
-            } else {
-                imageList = arrayListOf()
-                mAdapter.showAllImages(imageList)
-                Toast.makeText(this, "Try again", Toast.LENGTH_LONG).show()
-
-            }
-        })
-        val gridManager = GridLayoutManager(this, 2)
-        val itemDecoration = ItemOffsetDecoration(this, com.captain.picky.R.dimen.padding5)
-        recyclerView.addItemDecoration(itemDecoration)
-        gridManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-
-
-                when (position % 3) {
-                    0 -> return 2
-                    else -> return 1
-                }
-
-            }
-
-        }
-
-
-        recyclerView.layoutManager = gridManager
-        //recyclerView.adapter = mAdapter
-        //recyclerView.scheduleLayoutAnimation()
-
-        //recyclerView.adapter = mAdapter
-
-        /* val resId = R.anim.layout_animation_fall_down
-         val animation = AnimationUtils.loadLayoutAnimation(this, resId)
-         recyclerView.layoutAnimation = animation*/
-        mAdapter.notifyDataSetChanged()
-        //recyclerView.scheduleLayoutAnimation()
-        recyclerView.adapter = mAdapter
-
-        viewModel.getImagesFromNetwork()
-        // recyclerView.scheduleLayoutAnimation()
-
-
-    }
-
-    override fun onEnterAnimationComplete() {
-        super.onEnterAnimationComplete()
-
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        parentShimmerLayout.startShimmerAnimation()
-
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-        parentShimmerLayout.stopShimmerAnimation()
-    }
-
 
 
 }

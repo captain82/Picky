@@ -13,14 +13,15 @@ class ImageRecyclerAdapter(val onBindviewHolderCallback: Callback.onBindviewHold
     private var imageList: List<ImagesResponseModel>? = arrayListOf()
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.single_image_layout,parent,false))
-
-
-
-
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.single_image_layout,
+                parent,
+                false
+            )
+        )
 
     }
 
@@ -42,12 +43,6 @@ class ImageRecyclerAdapter(val onBindviewHolderCallback: Callback.onBindviewHold
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    {
-
-    }
-
-
-
 
 
 }
