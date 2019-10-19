@@ -16,8 +16,8 @@ data class ImagesResponseModel(
     val height:Int?,
     val id:String?,
     var author:String?,
-    val download_url:String?,
-    val url:String?,
+    var download_url:String?,
+    var url:String?,
     var visisbility: Boolean = true
 ) {
 }

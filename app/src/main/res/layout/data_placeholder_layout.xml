@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/thumbnailLeft"
+
+        android:layout_width="0dp"
+        android:layout_height="@dimen/placeholderImage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="20dp"
+        android:layout_margin="@dimen/padding5"
+
+
+        app:layout_constraintEnd_toStartOf="@id/thumbnailRight"
+
+        app:layout_constraintTop_toTopOf="parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundShimmer"
+    />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/thumbnailRight"
+
+        android:layout_width="0dp"
+        app:cardCornerRadius="8dp"
+        android:layout_margin="@dimen/padding5"
+
+        android:layout_height="@dimen/placeholderImage"
+
+        app:layout_constraintStart_toEndOf="@id/thumbnailLeft"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+
+        app:layout_constraintTop_toTopOf="parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundShimmer"
+
+        />
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

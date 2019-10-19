@@ -4,5 +4,13 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="fb">#2979FF</color>
+    <color name="white">#FAFAFA</color>
+    <color name="black">#000000</color>
+
+
+
+
+    <color name="backgroundShimmer">#D3D3D3</color>
+
 
 </resources>
