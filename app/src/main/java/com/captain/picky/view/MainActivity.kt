@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
 
     var clickPosition: Int? = null
 
+    var lastClicked: Int? = null
+
+
     var author: String? = ""
 
     var download_url: String? = ""
@@ -127,6 +130,7 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
     override fun onBindViewHolder(p0: ImageRecyclerAdapter.ViewHolder, position: Int) {
 
 
+
         val image = mutableImageList[position]
 
         //If the position is multiple of 3 we make their visibility GONE otherwise VISIBLE
@@ -143,7 +147,7 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
 
 
         } else {
-            if (!image.visisbility) {
+            if (!image.visibility) {
 
                 p0.itemView.detailsCardView.visibility = View.GONE
                 p0.itemView.triangle_marker.visibility = View.GONE
@@ -193,24 +197,50 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
                 index = position + 1
             }
 
+
+
+
             //changing the visibility all other tootips except the one clicked to false
             index?.let {
+
+
+
+
                 mutableImageList.forEachIndexed { index, imagesResponseModel ->
-                    if (index != it && imagesResponseModel.visisbility) {
-                        imagesResponseModel.visisbility = false
+                    if (index != it && imagesResponseModel.visibility) {
+                        imagesResponseModel.visibility = false
                         mAdapter.notifyItemChanged(index)
                     }
+                    else if(index==it && !imagesResponseModel.visibility)
+                    {
+                        imagesResponseModel.visibility = true
+                        mAdapter.notifyItemChanged(index)
+                    }else if(lastClicked==position)
+                    {
+                        Log.i("clicked",lastClicked.toString().plus(position.toString()))
+                        imagesResponseModel.visibility = false
+                        mAdapter.notifyItemChanged(it)
+                    }
                 }
+
+
+
                 mutableImageList[it].author = author
                 mutableImageList[it].download_url = download_url
                 mutableImageList[it].url = url
 
-                if (!mutableImageList[it].visisbility)
-                    mutableImageList[it].visisbility = true
-                else if (mutableImageList[it].visisbility)
-                    mutableImageList[it].visisbility = false
+                if(position==mutableImageList.lastIndex-1 || position==mutableImageList.lastIndex-2)
+                {
+                    recyclerView.smoothScrollToPosition(mutableImageList.size-1)
+                }
+
 
                 mAdapter.notifyItemChanged(it)
+
+
+
+
+                lastClicked = position
 
             }
         }

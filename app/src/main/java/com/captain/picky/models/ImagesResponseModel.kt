@@ -7,6 +7,6 @@ data class ImagesResponseModel(
     var author:String?,
     var download_url:String?,
     var url:String?,
-    var visisbility: Boolean = true
+    var visibility: Boolean = true
 ) {
 }
