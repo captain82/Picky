@@ -40,8 +40,6 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
     var url: String? = ""
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.captain.picky.R.layout.activity_main)
@@ -63,7 +61,17 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
                 it.forEachIndexed { index, imagesResponseModel ->
 
                     if (count % 3 == 0) {
-                        mutableImageList.add(ImagesResponseModel(index, 0, "null", "", "", "", false))
+                        mutableImageList.add(
+                            ImagesResponseModel(
+                                index,
+                                0,
+                                "null",
+                                "",
+                                "",
+                                "",
+                                false
+                            )
+                        )
                         mutableImageList.add(imagesResponseModel)
                         count++
                     } else {
@@ -128,7 +136,6 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
     }
 
     override fun onBindViewHolder(p0: ImageRecyclerAdapter.ViewHolder, position: Int) {
-
 
 
         val image = mutableImageList[position]
@@ -198,47 +205,34 @@ class MainActivity : AppCompatActivity(), Callback.onBindviewHolderCallback {
             }
 
 
-
-
             //changing the visibility all other tootips except the one clicked to false
             index?.let {
-
-
 
 
                 mutableImageList.forEachIndexed { index, imagesResponseModel ->
                     if (index != it && imagesResponseModel.visibility) {
                         imagesResponseModel.visibility = false
                         mAdapter.notifyItemChanged(index)
-                    }
-                    else if(index==it && !imagesResponseModel.visibility)
-                    {
+                    } else if (index == it && !imagesResponseModel.visibility) {
                         imagesResponseModel.visibility = true
                         mAdapter.notifyItemChanged(index)
-                    }else if(lastClicked==position)
-                    {
-                        Log.i("clicked",lastClicked.toString().plus(position.toString()))
+                    } else if (lastClicked == position) {
+                        Log.i("clicked", lastClicked.toString().plus(position.toString()))
                         imagesResponseModel.visibility = false
                         mAdapter.notifyItemChanged(it)
                     }
                 }
 
 
-
                 mutableImageList[it].author = author
                 mutableImageList[it].download_url = download_url
                 mutableImageList[it].url = url
 
-                if(position==mutableImageList.lastIndex-1 || position==mutableImageList.lastIndex-2)
-                {
-                    recyclerView.smoothScrollToPosition(mutableImageList.size-1)
+                if (position == mutableImageList.lastIndex - 1 || position == mutableImageList.lastIndex - 2) {
+                    recyclerView.smoothScrollToPosition(mutableImageList.size - 1)
                 }
 
-
                 mAdapter.notifyItemChanged(it)
-
-
-
 
                 lastClicked = position
 
